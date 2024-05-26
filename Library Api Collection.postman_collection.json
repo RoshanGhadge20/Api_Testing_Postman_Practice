@@ -13,6 +13,41 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const jsonData=pm.response.json();\r",
+							"pm.test(\"Validation of status/respnce code \",function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(jsonData).have.property(\"Msg\");\r",
+							"    pm.expect(jsonData.Msg).to.eql(\"successfully added\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Headers, Cookies, ResponseTime, validation\",function()\r",
+							"{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json;charset=UTF-8\");\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"    pm.expect(pm.response.text()).to.include(\"successfully added\");\r",
+							"} )\r",
+							"\r",
+							"console.log(jsonData);\r",
+							"const bookid=jsonData.ID;\r",
+							"pm.environment.set(\"bookID\", bookid);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(pm.globals.get(\"companyCode\"));\r",
+							"const code=pm.globals.get(\"companyCode\");\r",
+							"const val=pm.variables.replaceIn('{{$randomInt}}');\r",
+							"pm.collectionVariables.set(\"isbn\",code+val);\r",
+							"\r",
 							""
 						],
 						"type": "text/javascript",
@@ -25,7 +60,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\r\n\"name\":\"Selenium with java\",\r\n\"isbn\":\"abc\",\r\n\"aisle\":\"114\",\r\n\"author\":\"RG\"\r\n}\r\n",
+					"raw": "{\r\n\r\n\"name\":\"Selenium with java\",\r\n\"isbn\":\"{{isbn}}\",\r\n\"aisle\":\"111\",\r\n\"author\":\"{{authorname}}\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -47,6 +82,59 @@
 		},
 		{
 			"name": "Get book details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const getbookresponse=pm.response.json();\r",
+							"pm.test(\"validating the json reponse logic\",function()\r",
+							"{\r",
+							"    console.log(getbookresponse);\r",
+							"    pm.expect(getbookresponse[0].author).to.eql(pm.collectionVariables.get(\"authorname\"));\r",
+							"})\r",
+							"\r",
+							"const jsonSchema=\r",
+							"{\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"book_name\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"isbn\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"aisle\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"author\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"book_name\",\r",
+							"        \"isbn\",\r",
+							"        \"aisle\",\r",
+							"        \"author\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Validating the json schema for get method\", function()\r",
+							"{\r",
+							"    pm.response.to.have.jsonSchema(jsonSchema);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -63,31 +151,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/Library/GetBook.php?id=abc124",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"Library",
-						"GetBook.php"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "abc124"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Book from library",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/Library/GetBook.php?ID=abc124",
+					"raw": "{{base_url}}/Library/GetBook.php?ID={{bookID}}",
 					"host": [
 						"{{base_url}}"
 					],
@@ -98,7 +162,7 @@
 					"query": [
 						{
 							"key": "ID",
-							"value": "abc124"
+							"value": "{{bookID}}"
 						}
 					]
 				}
@@ -106,16 +170,45 @@
 			"response": []
 		},
 		{
-			"name": "Delete Book with payload",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "Delete Book from library",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema={\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"msg\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"msg\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Validating status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"pm.test(\"Vaildating json response schema for delete method\", function(){\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"ID\":\"3389\"\r\n}",
+					"raw": "{\r\n    \"ID\":\"{{bookID}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -134,6 +227,40 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "isbn",
+			"value": "RG",
+			"type": "string"
+		},
+		{
+			"key": "authorname",
+			"value": "RG",
+			"type": "string"
 		}
 	]
 }
