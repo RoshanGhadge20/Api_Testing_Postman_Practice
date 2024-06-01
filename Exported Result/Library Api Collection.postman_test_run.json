@@ -1,0 +1,139 @@
+{
+	"id": "9472cf26-9659-4034-a4a1-b2cbdf9ad2d8",
+	"name": "Library Api Collection",
+	"timestamp": "2024-06-01T13:01:48.620Z",
+	"collection_id": "26602136-21687903-021d-452f-a59f-f35a65ef530d",
+	"folder_id": 0,
+	"environment_id": "26602136-c28cd1c2-86f6-4e5d-a534-26c753a39f96",
+	"totalPass": 7,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2024-06-01T13:01:48.007Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "140057ea-ff7d-407e-b82b-04c34575575a",
+			"name": "Add Book to Library",
+			"url": "https://rahulshettyacademy.com/Library/Addbook.php",
+			"time": 41,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Validation of status/respnce code ": true,
+				"Headers, Cookies, ResponseTime, validation": true,
+				"Verify that content id uniquely generated each time": true
+			},
+			"testPassFailCounts": {
+				"Validation of status/respnce code ": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Headers, Cookies, ResponseTime, validation": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Verify that content id uniquely generated each time": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				41
+			],
+			"allTests": [
+				{
+					"Validation of status/respnce code ": true,
+					"Headers, Cookies, ResponseTime, validation": true,
+					"Verify that content id uniquely generated each time": true
+				}
+			]
+		},
+		{
+			"id": "f4cbb359-3f0a-451f-9b0d-e1829dbbf448",
+			"name": "Get book details",
+			"url": "https://rahulshettyacademy.com/Library/GetBook.php?ID=RG829111",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"validating the json reponse logic": true,
+				"Validating the json schema for get method": true
+			},
+			"testPassFailCounts": {
+				"validating the json reponse logic": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Validating the json schema for get method": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"validating the json reponse logic": true,
+					"Validating the json schema for get method": true
+				}
+			]
+		},
+		{
+			"id": "9263c70a-45e3-47f3-a318-fa7ba900f606",
+			"name": "Delete Book from library",
+			"url": "https://rahulshettyacademy.com/Library/DeleteBook.php",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Validating status code": true,
+				"Vaildating json response schema for delete method": true
+			},
+			"testPassFailCounts": {
+				"Validating status code": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Vaildating json response schema for delete method": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Validating status code": true,
+					"Vaildating json response schema for delete method": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 70,
+	"collection": {
+		"requests": [
+			{
+				"id": "140057ea-ff7d-407e-b82b-04c34575575a",
+				"method": "POST"
+			},
+			{
+				"id": "f4cbb359-3f0a-451f-9b0d-e1829dbbf448",
+				"method": "GET"
+			},
+			{
+				"id": "9263c70a-45e3-47f3-a318-fa7ba900f606",
+				"method": "DELETE"
+			}
+		]
+	}
+}
