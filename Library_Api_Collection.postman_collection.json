@@ -14,6 +14,12 @@
 					"script": {
 						"exec": [
 							"const jsonData=pm.response.json();\r",
+							"\r",
+							"console.log(jsonData);\r",
+							"const bookid=jsonData.ID;\r",
+							"pm.environment.set(\"bookID\", bookid);\r",
+							"\r",
+							"// Test 1\r",
 							"pm.test(\"Validation of status/respnce code \",function()\r",
 							"{\r",
 							"    pm.response.to.have.status(200);\r",
@@ -21,18 +27,34 @@
 							"    pm.expect(jsonData.Msg).to.eql(\"successfully added\");\r",
 							"})\r",
 							"\r",
+							"//Test 2\r",
 							"pm.test(\"Headers, Cookies, ResponseTime, validation\",function()\r",
 							"{\r",
 							"    pm.response.to.have.header(\"Content-Type\");\r",
 							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json;charset=UTF-8\");\r",
 							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
 							"    pm.expect(pm.response.text()).to.include(\"successfully added\");\r",
-							"} )\r",
+							"})\r",
 							"\r",
-							"console.log(jsonData);\r",
-							"const bookid=jsonData.ID;\r",
-							"pm.environment.set(\"bookID\", bookid);\r",
 							"\r",
+							"//Test 3\r",
+							"pm.test(\"Verify that content id uniquely generated each time\",function()\r",
+							"{\r",
+							"    const isbn_val=pm.collectionVariables.get(\"isbn\");\r",
+							"    var  req=JSON.parse(pm.request.body.raw);\r",
+							"    const aisl_val=req.aisle;\r",
+							"    const actual_val=isbn_val+aisl_val;\r",
+							"    pm.expect(actual_val).to.eql(bookid);\r",
+							"    console.log(\"Content id is each time uniquelyy gets generated\");\r",
+							"})\r",
+							"\r",
+							"\r",
+							"//Test 4\r",
+							"//pm.test(\"Working with .csv file\",function()\r",
+							"//{\r",
+							"//    pm.collectionVariables.set(bookname.pm.iterationData.get(\"BookName\"));\r",
+							"//    pm.collectionVariables.set(authorname.pm.iterationData.get(\"Author\"));\r",
+							"//})\r",
 							""
 						],
 						"type": "text/javascript",
@@ -128,7 +150,12 @@
 							"{\r",
 							"    pm.response.to.have.jsonSchema(jsonSchema);\r",
 							"})\r",
-							""
+							"\r",
+							"pm.test(\"Validation of status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(\"200\");\r",
+							"\r",
+							"})"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -227,6 +254,30 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "New Request made in fork",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/Library/GetBook.php?ID={{bookID}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Library",
+						"GetBook.php"
+					],
+					"query": [
+						{
+							"key": "ID",
+							"value": "{{bookID}}"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -260,6 +311,11 @@
 		{
 			"key": "authorname",
 			"value": "RG",
+			"type": "string"
+		},
+		{
+			"key": "bookname",
+			"value": "",
 			"type": "string"
 		}
 	]
