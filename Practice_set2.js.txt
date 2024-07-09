@@ -1,0 +1,54 @@
+/*console.log("Practice set of functions")
+
+function add(a,b)
+{
+    return a+b
+}
+
+let sum=add(3,3)
+console.log(sum)
+
+/*Another type of function is - anonymous function 
+var great= function()
+{
+    console.log("getting call great functions ")
+}
+great()*/
+
+Var keyword => variable declared with the var keyword is accessbile within throughout the function it declared 
+
+let keyword => variable declared with the let keyword is accessible within the block of function only. 
+*/
+// JavaScript String 
+
+let day='Sunday'
+console.log(day)
+let spl=day.split("u")
+console.log(spl)
+console.log(spl.trim())
+console.log(day.length())
+
+
+late date='25'
+let nexdate='27'
+let diff=parseInt(nexdate)-parseInt(date)
+console.log(diff)
+
+
+// Concatenation of two string 
+
+let name="rg"+is good boy
+
+console.log(name)
+
+// While loop to count number of occurance of word day
+let newque="today is funday"
+let count=0
+let val=newque.indexOf('day')
+while(val==-1)
+{
+    count ++
+    val=newque.indexof('day',+val+1)
+    
+}
+console.log(val)
